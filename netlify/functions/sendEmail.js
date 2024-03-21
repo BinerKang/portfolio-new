@@ -1,7 +1,5 @@
 import fetch from 'node-fetch'
 
-const RESEND_API_KEY = process.env.RESEND_API_KEY
-
 export const handler = async function (event, context) {
   const eventBody = JSON.parse(event.body)
   const senderEmail = eventBody.senderEmail
@@ -11,7 +9,7 @@ export const handler = async function (event, context) {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_API_KEY}`
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
     },
     body: JSON.stringify({
       from: "onboarding@resend.dev",

@@ -1,14 +1,13 @@
 import fetch from 'node-fetch'
 
-const MONGODB_API_KEY = process.env.MONGODB_API_KEY
-
 export const handler = async function () {
-  
+
+  console.log('Begin Fetch Apps Key:' + process.env.MONGODB_API_KEY)
   const res = await fetch('https://eastasia.azure.data.mongodb-api.com/app/data-unyhv/endpoint/data/v1/action/aggregate', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
-        'apiKey': MONGODB_API_KEY
+        'apiKey': process.env.MONGODB_API_KEY
     },
     body: JSON.stringify({
       "dataSource": "Cluster0",
