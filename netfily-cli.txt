@@ -1,3 +1,7 @@
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ntl init
 ntl dev
+
+Do not forget add below to netlify.toml
+[functions]
+  node_bundler = "esbuild"
