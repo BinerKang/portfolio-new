@@ -31,10 +31,15 @@ const Intro = () => {
           }
         }
 
-        const res = await fetch('/.netlify/functions/getApp').then(res => res.json())
-        localStorage.setItem("lastFetchData", JSON.stringify({time: new Date().getTime(), apps: res.apps}))
-        setAppsData(res.apps)
-        console.log('use Api')
+        const response = await fetch('/.netlify/functions/getApp')
+        
+        const res = await response.json()
+        console.log('use Api:' + JSON.stringify(res))
+        if (res.apps) {
+          setAppsData(res.apps)
+          localStorage.setItem("lastFetchData", JSON.stringify({time: new Date().getTime(), apps: res.apps}))
+        }
+      
         // For Test
         // setAppsData([
         //   {"desc":"安卓手机应用-海量电影、电视剧，及时更新。","img":"https://utfs.io/f/4259bee3-4d76-4d83-9617-6bfcc591dcb1-l13fdx.svg","name":"花儿影视","url":"https://utfs.io/f/6b2b206e-e8bf-4d5f-a70f-cb9aeb314b02-gtsihv.apk","hide":false},
