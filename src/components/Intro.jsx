@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Avatar from '../assets/avatar.jpg'
 import { motion } from 'framer-motion'
 import { BsArrowRight } from "react-icons/bs"
@@ -8,13 +8,47 @@ import { FaGithubSquare } from "react-icons/fa"
 import { useSectionInView } from '../lib/hooks'
 import { useActiveSectionContext } from '../context/activeSectionContext'
 import { HiDownload } from 'react-icons/hi'
-import { appsData } from '../lib/data'
+import { useSnackbar } from 'notistack';
 
 const Intro = () => {
   const { ref } = useSectionInView("主 页", 0.5);
   const { setActiveSection, setTimeOfLastClick } = useActiveSectionContext();
-
+  const { enqueueSnackbar } = useSnackbar()
   const [ count, setCount ] = useState(0)
+
+  const [appsData, setAppsData] = useState([])
+
+  useEffect(() => {
+     const fetchData = async () => {
+      try {
+        const lastFetch = localStorage.getItem("lastFetchData")
+        if (lastFetch != null) {
+          const localData = JSON.parse(lastFetch)
+          if ((new Date().getTime() - localData.time) < 60*60*1000) {
+            console.log('use local')
+            setAppsData(localData.apps)
+            return
+          }
+        }
+
+        const res = await fetch('/.netlify/functions/getApp').then(res => res.json())
+        localStorage.setItem("lastFetchData", JSON.stringify({time: new Date().getTime(), apps: res.apps}))
+        setAppsData(res.apps)
+        console.log('use Api')
+        // For Test
+        // setAppsData([
+        //   {"desc":"安卓手机应用-海量电影、电视剧，及时更新。","img":"https://utfs.io/f/4259bee3-4d76-4d83-9617-6bfcc591dcb1-l13fdx.svg","name":"花儿影视","url":"https://utfs.io/f/6b2b206e-e8bf-4d5f-a70f-cb9aeb314b02-gtsihv.apk","hide":false},
+        //   {"_id":{"$oid":"65fbcfbf8a695255685e385b"},"desc":"悟道","img":"https://utfs.io/f/7e5af2df-b533-429f-ae61-1ced2eebee36-2xq.svg","name":"悟","url":"https://utfs.io/f/956657f9-7e6c-4aa5-95aa-5767138d6e7e-n7xrc5.apk","hide":false},
+        //   {"desc":"安卓手机应用-海量电影、电视剧，及时更新。","img":"https://utfs.io/f/4259bee3-4d76-4d83-9617-6bfcc591dcb1-l13fdx.svg","name":"花儿影视","url":"https://utfs.io/f/6b2b206e-e8bf-4d5f-a70f-cb9aeb314b02-gtsihv.apk","hide":false},
+         
+        // ])
+      } catch (err) {
+        enqueueSnackbar('加载应用信息失败!', { variant: 'error'})
+      } 
+    }
+    
+    fetchData()
+  }, [])
 
   return (
     <section ref={ref} id="home"
@@ -103,7 +137,7 @@ const Intro = () => {
 
       
       <motion.div
-        className="flex flex-row items-center justify-center gap-4 px-4 mt-10 text-lg font-medium"
+        className="flex flex-row  flex-wrap items-center justify-center gap-2 mt-10 text-lg font-medium"
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
@@ -111,10 +145,8 @@ const Intro = () => {
         }}
       >
         {
-          appsData.slice(0, (count != 0 && count%6 == 0) ? appsData.length : 1).map((app, i) => (
-            <React.Fragment key={i}>
-              <DownloadItem {...app} />
-            </React.Fragment>
+          appsData.map((app, i) => (
+            <DownloadItem key={i} {...app} count={count}/>
           ))
         }
           
@@ -125,17 +157,26 @@ const Intro = () => {
 
 export default Intro
 
-const DownloadItem = ({ imageUrl, link }) => {
-  return <div className="flex flex-col items-center gap-4">
+const DownloadItem = ({ url, img, hide, desc, name, count }) => {
+  return (count != 0 && count%6 == 0 || !hide ) && 
+      <div className="flex flex-col w-40 sm:w-60 rounded-2xl items-center p-3 gap-4 bg-gray-200 hover:bg-gray-300 dark:bg-white/10 dark:hover:bg-white/20">
           <img 
-              className='w-24'
-              src={imageUrl}
+              className='h-24'
+              src={img}
               alt='portrait'
             />
 
+          <p className=''>
+            {name}
+          </p>
+          <p className=' text-xs h-10'>
+            {desc}
+          </p>
+
+
           <a
-              className="group bg-white px-7 py-3 flex items-center gap-2 rounded-full outline-none focus:scale-110 hover:scale-110 active:scale-105 transition cursor-pointer borderBlack dark:bg-white/10"
-              href={link}
+              className="group px-5 py-2 text-sm flex items-center gap-2 rounded-full outline-none focus:scale-110 hover:scale-110 active:scale-105 transition cursor-pointer font borderBlack bg-gray-900 text-white"
+              href={url}
               download
             >
               下载

@@ -15,8 +15,17 @@ export default function Contact() {
     setIsPending(true)
     
     try {
-      enqueueSnackbar('消息发送成功!', { variant: 'success', autoHideDuration: 3000})
+      const senderEmail = e.target[0].value;
+      const message = e.target[1].value;
 
+      await fetch('/.netlify/functions/sendEmail', {
+        method: 'POST',
+        body: JSON.stringify({
+          senderEmail, message
+        })
+      }).then(res => res.json())
+
+      enqueueSnackbar('消息发送成功!', { variant: 'success', autoHideDuration: 3000})
     } catch (err) {
       enqueueSnackbar('消息发送失败!', { variant: 'error'})
     } finally { 

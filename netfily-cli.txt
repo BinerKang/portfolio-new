@@ -1,1 +1,3 @@
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+ntl init
+ntl dev
