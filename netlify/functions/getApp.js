@@ -2,7 +2,7 @@ import fetch from 'node-fetch'
 
 export const handler = async function () {
 
-  console.log('Begin Fetch Apps Key:' + process.env.MONGODB_API_KEY)
+  // console.log('Begin Fetch Apps Key:' + process.env.MONGODB_API_KEY)
   const res = await fetch('https://eastasia.azure.data.mongodb-api.com/app/data-unyhv/endpoint/data/v1/action/aggregate', {
     method: 'POST',
     headers: {

@@ -34,7 +34,7 @@ const Intro = () => {
         const response = await fetch('/.netlify/functions/getApp')
         
         const res = await response.json()
-        console.log('use Api:' + JSON.stringify(res))
+        // console.log('use Api:' + JSON.stringify(res))
         if (res.apps) {
           setAppsData(res.apps)
           localStorage.setItem("lastFetchData", JSON.stringify({time: new Date().getTime(), apps: res.apps}))
