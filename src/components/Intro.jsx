@@ -30,14 +30,13 @@ const Intro = () => {
             return
           }
         }
-
-        const response = await fetch('/.netlify/functions/getApp')
+        const response = await fetch("https://8n0tzrqksi.execute-api.ap-southeast-1.amazonaws.com/default/findApps")
         
         const res = await response.json()
         // console.log('use Api:' + JSON.stringify(res))
-        if (res.apps) {
-          setAppsData(res.apps)
-          localStorage.setItem("lastFetchData", JSON.stringify({time: new Date().getTime(), apps: res.apps}))
+        if (res) {
+          setAppsData(res)
+          localStorage.setItem("lastFetchData", JSON.stringify({time: new Date().getTime(), apps: res}))
         }
       
         // For Test
