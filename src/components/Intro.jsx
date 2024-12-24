@@ -30,7 +30,8 @@ const Intro = () => {
             return
           }
         }
-        const response = await fetch("https://8n0tzrqksi.execute-api.ap-southeast-1.amazonaws.com/default/findApps")
+        
+        const response = await fetch('https://hqkoofmw62m3odl3y372a2lbte0bonpj.lambda-url.ap-southeast-1.on.aws/api-no/apps')
         
         const res = await response.json()
         // console.log('use Api:' + JSON.stringify(res))
